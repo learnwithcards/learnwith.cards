@@ -1,0 +1,23 @@
+# added by github template: (please uncomment)
+type User @model {
+  # Required system field:
+  id: ID! @isUnique # read-only (managed by Graphcool)
+
+  # Optional system fields (remove if not needed):
+  createdAt: DateTime! # read-only (managed by Graphcool)
+  updatedAt: DateTime! # read-only (managed by Graphcool)
+
+  name: String!
+  avatarUrl: String
+  githubUserId: String @isUnique
+
+  decks: [Deck!]! @relation(name: "UsersAuthoredDecks")
+}
+
+type Deck @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  author: User! @relation(name: "UsersAuthoredDecks")
+}
