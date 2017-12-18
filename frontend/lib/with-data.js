@@ -24,8 +24,6 @@ export default ComposedComponent => {
     }
 
     static async getInitialProps (context) {
-      let serverState = {}
-
       // Setup a server-side one-time-use apollo client for initial props and
       // rendering (on server)
       let apollo = initApollo({}, {
@@ -40,6 +38,7 @@ export default ComposedComponent => {
 
       // Run all graphql queries in the component tree
       // and extract the resulting data
+      let serverState
       if (!process.browser) {
         if (context.res && context.res.finished) {
           // When redirecting, the response is finished.
@@ -59,13 +58,7 @@ export default ComposedComponent => {
         await getDataFromTree(app)
 
         // Extract query data from the Apollo's store
-        const state = apollo.extract()
-
-        serverState = {
-          apollo: { // Make sure to only include Apollo's data state
-            data: state.data
-          }
-        }
+        serverState = apollo.extract()
       }
 
       return {
@@ -76,20 +69,27 @@ export default ComposedComponent => {
 
     constructor (props) {
       super(props)
-      // Note: Apollo should never be used on the server side beyond the initial
-      // render within `getInitialProps()` above (since the entire prop tree
-      // will be initialized there), meaning the below will only ever be
-      // executed on the client.
-      this.apollo = initApollo(this.props.serverState, {
+      const serverState = typeof window !== 'undefined'
+        ? window.__APOLLO_STATE__
+        : props.serverState
+      this.apollo = initApollo(serverState, {
         getToken: () => parseCookies().token
       })
     }
 
     render () {
       return (
-        <ApolloProvider client={this.apollo}>
-          <ComposedComponent {...this.props} />
-        </ApolloProvider>
+        <div>
+          <ApolloProvider client={this.apollo}>
+            <ComposedComponent {...this.props} />
+          </ApolloProvider>
+          <script
+            charSet="UTF-8"
+            dangerouslySetInnerHTML={{
+              __html: `window.__APOLLO_STATE__=${JSON.stringify(this.props.serverState)};`,
+            }}
+          />
+        </div>
       )
     }
   }

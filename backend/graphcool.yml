@@ -44,7 +44,8 @@ functions:
 # https://www.graph.cool/docs/reference/auth/authorization/overview-iegoo0heez
 permissions:
   - operation: "*"
-
+  - operation: "Deck.create"
+    authenticated: true
 
 # Your root tokens used for functions to get full access to the API
 # Read more here:

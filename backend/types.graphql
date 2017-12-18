@@ -8,7 +8,9 @@ type User @model {
   updatedAt: DateTime! # read-only (managed by Graphcool)
 
   name: String!
+  username: String! @isUnique
   avatarUrl: String
+
   githubUserId: String @isUnique
 
   decks: [Deck!]! @relation(name: "UsersAuthoredDecks")
@@ -18,6 +20,6 @@ type Deck @model {
   id: ID! @isUnique
   createdAt: DateTime!
   updatedAt: DateTime!
-  name: String!
+  firstName: String! @isUnique
   author: User! @relation(name: "UsersAuthoredDecks")
 }

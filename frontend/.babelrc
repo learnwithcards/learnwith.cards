@@ -1,4 +1,7 @@
 {
-  "plugins": ["graphql-tag"],
+  "plugins": [
+    "graphql-tag",
+    ["styled-components", { "ssr": true, "displayName": true, "preprocess": false } ]
+  ],
   "presets": ["next/babel"]
 }

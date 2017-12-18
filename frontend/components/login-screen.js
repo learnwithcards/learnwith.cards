@@ -1,13 +1,35 @@
+// @flow
 import React from 'react'
+import styled from 'styled-components'
 
-// TODO: get this from env
-const GITHUB_CLIENT_ID = '6a9f2b394253538562df'
-const GITHUB_URL = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=read:user`
+import Text from '../design-system/text'
+import GithubLogin from '../design-system/github-login'
+
+const Fullscreen = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fb1;
+`
+
+const Distribute = styled.div`
+  display: flex;
+  align-items: center;
+
+  & > * {
+    margin-right: 16px;
+  }
+`
 
 const LoginScreen = () => (
-  <div>
-    <a href={GITHUB_URL}>Login with GitHub</a>
-  </div>
+  <Fullscreen>
+    <Distribute>
+      <Text size='l' tag='h1'>learnwith.cards</Text>
+      <GithubLogin />
+    </Distribute>
+  </Fullscreen>
 )
 
 export default LoginScreen
