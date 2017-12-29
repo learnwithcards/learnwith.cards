@@ -6,6 +6,7 @@ import Error from '../pages/_error'
 import withAuth from '../lib/with-auth'
 import WebpageLayout from '../design-system/webpage-layout'
 import Text from '../design-system/text'
+import Translator from '../components/translator'
 
 class Profile extends React.Component {
   static async getInitialProps ({ query }) {
@@ -31,7 +32,7 @@ class Profile extends React.Component {
     }
 
     const addCards = isAuthorView
-      ? <Text>AddCards</Text>
+      ? <Translator />
       : null
 
     return (
