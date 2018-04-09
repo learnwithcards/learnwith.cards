@@ -4,10 +4,24 @@ type User @model {
   createdAt: DateTime!
   updatedAt: DateTime!
 
+  avatarUrl: String
   githubUserId: String @isUnique
+  login: String! @isUnique
+  name: String!
 }
 
+type Deck @model {
+  id: ID! @isUnique
 
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  name: String!
+}
+
+type Card @model {
+  id ID! @isUnique
+}
 # Uncomment the model below as well
 # type Post @model {
 #   id: ID! @isUnique

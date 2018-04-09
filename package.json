@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "deploy:backend": "cd backend && source .env && graphcool deploy",
+    "backend:deploy": "source .env && cd backend && graphcool deploy",
+    "backend:logs": "cd backend && graphcool logs",
     "precommit": "lint-staged"
   },
   "lint-staged": {

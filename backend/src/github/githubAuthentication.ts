@@ -3,11 +3,17 @@ import { GraphQLClient } from 'graphql-request'
 import * as fetch from 'isomorphic-fetch'
 
 interface User {
-  id: string
+  avatarUrl: string;
+  id: string;
+  login: string;
+  name: string;
 }
 
 interface GithubUser {
-  id: string
+  avatar_url: string;
+  id: string;
+  login: string;
+  name: string;
 }
 
 interface EventData {
@@ -39,22 +45,22 @@ export default async (event: FunctionEvent<EventData>) => {
     const githubUser = await getGithubUser(githubToken)
 
     // get graphcool user by github id
-    const user: User = await getGraphcoolUser(api, githubUser.id)
+    let user: User = await getGraphcoolUser(api, githubUser.id)
       .then(r => r.User)
 
-    // check if graphcool user exists, and create new one if not
-    let userId: string | null = null
-
     if (!user) {
-      userId = await createGraphcoolUser(api, githubUser.id)
-    } else {
-      userId = user.id
+      user = await createGraphcoolUser(api, githubUser)
     }
 
     // generate node token for User node
-    const token = await graphcool.generateNodeToken(userId!, 'User')
+    const token = await graphcool.generateNodeToken(user.id!, 'User')
 
-    return { data: { id: userId, token} }
+    return {
+      data: {
+        ...user,
+        token
+      }
+    }
   } catch (e) {
     console.log(e)
     return { error: 'An unexpected error occured during authentication.' }
@@ -101,7 +107,10 @@ async function getGraphcoolUser(api: GraphQLClient, githubUserId: string): Promi
   const query = `
     query getUser($githubUserId: String!) {
       User(githubUserId: $githubUserId) {
-        id
+        avatarUrl,
+        id,
+        login,
+        name
       }
     }
   `
@@ -114,22 +123,36 @@ async function getGraphcoolUser(api: GraphQLClient, githubUserId: string): Promi
   return api.request<{ User }>(query, variables)
 }
 
-async function createGraphcoolUser(api: GraphQLClient, githubUserId: string): Promise<string> {
+async function createGraphcoolUser(api: GraphQLClient, githubUser: GithubUser): Promise<User> {
   const mutation = `
-    mutation createUser($githubUserId: String!) {
+    mutation createUser(
+      $avatarUrl: String,
+      $githubUserId: String!,
+      $login: String!,
+      $name: String!
+    ) {
       createUser(
-        githubUserId: $githubUserId
+        avatarUrl: $avatarUrl,
+        githubUserId: $githubUserId,
+        login: $login,
+        name: $name
       ) {
-        id
+        avatarUrl,
+        id,
+        login,
+        name
       }
     }
   `
 
   const variables = {
+    avatarUrl: githubUser.avatar_url || null,
     // need to 'cast' to string, otherwise it will be seen as integer by GraphQL (because it's a number string)
-    githubUserId: `${githubUserId}`
+    githubUserId: `${githubUser.id}`,
+    login: githubUser.login,
+    name: githubUser.name
   }
 
   return api.request<{ createUser: User }>(mutation, variables)
-    .then(r => r.createUser.id)
+    .then(r => r.createUser)
 }
