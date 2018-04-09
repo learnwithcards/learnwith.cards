@@ -1,10 +1,52 @@
 import React from 'react'
 import cookie from 'cookie'
-import { withApollo, compose } from 'react-apollo'
+import { withApollo, compose, Mutation, Query } from 'react-apollo'
+import gql from 'graphql-tag'
 
 import withData from '../lib/withData'
 import redirect from '../lib/redirect'
 import checkLoggedIn from '../lib/checkLoggedIn'
+
+const LOGGED_IN_USER = gql`
+  query loggedInUser {
+    loggedInUser {
+      id
+    }
+  }
+`
+
+const CREATE_DECK = gql`
+  mutation createDeck(
+    $name: String!,
+    $authorId: ID!
+  ) {
+    createDeck(name: $name, authorId: $authorId) {
+      id
+    }
+  }
+`
+
+class CreateDeckForm extends React.Component {
+  render () {
+    return (
+      <Query query={LOGGED_IN_USER}>
+        {({ data }) => (
+          <Mutation mutation={CREATE_DECK}>
+            {createDeck => (
+              <button
+                onClick={() => createDeck({
+                  variables: { name: 'bar', authorId: data.loggedInUser.id }
+                })}
+              >
+                Create a deck!
+              </button>
+            )}
+          </Mutation>
+        )}
+      </Query>
+    )
+  }
+}
 
 class Index extends React.Component {
   static async getInitialProps (context, apolloClient) {
@@ -35,7 +77,9 @@ class Index extends React.Component {
     return (
       <div>
         Hello {this.props.loggedInUser.name}!<br />
+        <CreateDeckForm />
         <button onClick={this.signout}>Sign out</button>
+
       </div>
     )
   }

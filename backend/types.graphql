@@ -8,6 +8,8 @@ type User @model {
   githubUserId: String @isUnique
   login: String! @isUnique
   name: String!
+
+  decks: [Deck!]! @relation(name: "UserDecks")
 }
 
 type Deck @model {
@@ -16,11 +18,20 @@ type Deck @model {
   createdAt: DateTime!
   updatedAt: DateTime!
 
+  author: User! @relation(name: "UserDecks")
+  cards: [Card!]! @relation(name: "DeckCards")
   name: String!
 }
 
 type Card @model {
-  id ID! @isUnique
+  id: ID! @isUnique
+
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  deck: Deck! @relation(name: "DeckCards")
+  sideA: String!
+  sideB: String!
 }
 # Uncomment the model below as well
 # type Post @model {
