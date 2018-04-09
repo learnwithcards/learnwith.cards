@@ -5,9 +5,17 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": ["standard --fix", "prettier-standard", "git add"]
+    "*.js": [
+      "standard --fix",
+      "prettier-standard",
+      "git add"
+    ]
+  },
+  "standard": {
+    "parser": "babel-eslint"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.2",
     "graphcool": "^0.11.6",
     "husky": "^0.14.3",
     "lint-staged": "^7.0.4",

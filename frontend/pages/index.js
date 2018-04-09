@@ -10,7 +10,7 @@ class Index extends React.Component {
   static async getInitialProps (context, apolloClient) {
     const { loggedInUser } = await checkLoggedIn(context, apolloClient)
 
-    if (!loggedInUser.id) {
+    if (!loggedInUser) {
       // If not signed in, send them somewhere more useful
       redirect(context, '/login')
     }
@@ -39,7 +39,7 @@ class Index extends React.Component {
       </div>
     )
   }
-};
+}
 
 export default compose(
   // withData gives us server-side graphql queries before rendering
