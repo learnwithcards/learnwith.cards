@@ -1,0 +1,28 @@
+types: ./types.graphql
+
+functions:
+  githubAuthentication:
+    handler:
+      code:
+        src: ./src/github/githubAuthentication.ts
+        environment:
+          GITHUB_CLIENT_ID: "6a9f2b394253538562df"
+          GITHUB_CLIENT_SECRET: "8b72f5cd23a524d9ed8ffe555a800657faa1c013"
+    type: resolver
+    schema: ./src/github/githubAuthentication.graphql
+  loggedInUser:
+    handler:
+      code:
+        src: ./src/github/loggedInUser.ts
+    type: resolver
+    schema: ./src/github/loggedInUser.graphql
+
+permissions:
+  - operation: "*"
+
+# Your root tokens used for functions to get full access to the API
+# Read more here:
+# https://www.graph.cool/docs/reference/auth/authentication/authentication-tokens-eip7ahqu5o
+# rootTokens:
+#   - mytoken
+

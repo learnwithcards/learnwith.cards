@@ -1,0 +1,11 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "My Graphcool Service",
+  "dependencies": {
+    "graphcool": "^0.11.6",
+    "graphcool-lib": "^0.1.4",
+    "graphql-request": "^1.6.0",
+    "isomorphic-fetch": "^2.2.1"
+  }
+}
